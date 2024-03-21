@@ -2,6 +2,7 @@ package pokequery
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -76,20 +77,24 @@ func ListPokemon(cCtx *cli.Context) error {
 }	
 
 func PokemonById(cCtx *cli.Context) error { 
-	endPoint := "https://pokeapi.co/api/v2/pokemon/" + cCtx.Args().First()
+	id := cCtx.Args().First()
+	endPoint := "https://pokeapi.co/api/v2/pokemon/" + id
 	
 	resp, err := http.Get(endPoint)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	if resp.StatusCode == 404 {
+		log.Fatalln("No Pokemon with Id: " + id)
+	}
+	
 	defer bodyCloser(resp)
 	
 	var data Pokemon
-	
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	tmplFile := "pokemonById.tmpl"
@@ -103,12 +108,19 @@ func PokemonById(cCtx *cli.Context) error {
 }
 
 func PokemonByType(cCtx *cli.Context) error {
-	endPoint := "https://pokeapi.co/api/v2/type/" + cCtx.Args().First()
+	pokemonType := cCtx.Args().First()
+	endPoint := "https://pokeapi.co/api/v2/type/" + pokemonType
 	
 	resp, err := http.Get(endPoint)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	if resp.StatusCode == 404 {
+		log.Fatalln("No Pokemon with type: " + pokemonType)
+	}
+	
+	fmt.Println(resp)
 
 	defer bodyCloser(resp)
 	
