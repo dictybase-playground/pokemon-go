@@ -65,8 +65,8 @@ func ListPokemon(cCtx *cli.Context) error {
 				return i + 1
 		},
 	}
-
-	tmpl := template.Must(template.New("listPokemon.tmpl").Funcs(funcMap).ParseFiles("listPokemon.tmpl"))
+	tmplFile := "listPokemon.tmpl"
+	tmpl := template.Must(template.New(tmplFile).Funcs(funcMap).ParseFiles(tmplFile))
 	err = tmpl.Execute(os.Stdout, data)
 	if err != nil {
 		log.Fatalln(err)
