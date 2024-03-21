@@ -132,7 +132,7 @@ func PokemonByType(cCtx *cli.Context) error {
 	
 		
 	funcMap := template.FuncMap{
-		"inc": Increment
+		"inc": Increment,
 	}
 	tmplFile := "pokemonByType.tmpl"
 	tmpl := template.Must(template.New(tmplFile).Funcs(funcMap).ParseFiles(tmplFile))
