@@ -41,6 +41,10 @@ func bodyCloser (resp *http.Response) {
 	}
 }
 
+func Increment(i int) int {
+	return i + 1
+}
+
 func ListPokemon(cCtx *cli.Context) error { 	
 	params := url.Values{}
 	params.Add("limit", cCtx.Args().First())
@@ -61,9 +65,7 @@ func ListPokemon(cCtx *cli.Context) error {
 	}
 	
 	funcMap := template.FuncMap{
-		"inc": func(i int) int {
-				return i + 1
-		},
+		"inc": Increment,
 	}
 	tmplFile := "listPokemon.tmpl"
 	tmpl := template.Must(template.New(tmplFile).Funcs(funcMap).ParseFiles(tmplFile))
@@ -130,9 +132,7 @@ func PokemonByType(cCtx *cli.Context) error {
 	
 		
 	funcMap := template.FuncMap{
-		"inc": func(i int) int {
-				return i + 1
-		},
+		"inc": Increment
 	}
 	tmplFile := "pokemonByType.tmpl"
 	tmpl := template.Must(template.New(tmplFile).Funcs(funcMap).ParseFiles(tmplFile))
