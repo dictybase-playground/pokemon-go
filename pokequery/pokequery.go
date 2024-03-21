@@ -2,7 +2,6 @@ package pokequery
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -120,8 +119,6 @@ func PokemonByType(cCtx *cli.Context) error {
 		log.Fatalln("No Pokemon with type: " + pokemonType)
 	}
 	
-	fmt.Println(resp)
-
 	defer bodyCloser(resp)
 	
 	var data Type
