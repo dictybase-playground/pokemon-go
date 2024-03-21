@@ -1,0 +1,5 @@
+== PokemonByType ==
+TYPE: {{ .Name }}
+{{ range $i, $e := .Pokemon }}
+{{ inc $i }}. {{ .Pokemon.Name }}
+{{ end }}

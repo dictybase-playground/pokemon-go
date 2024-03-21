@@ -2,10 +2,11 @@ package pokequery
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"text/template"
 
 	"github.com/urfave/cli/v2"
 )
@@ -14,13 +15,13 @@ type NamedApiResource struct {
 	Name string `json:"name"`
 }
 
-type ListPokemonResponseBodyData struct {
+type NamedAPIResourceList struct {
 	Count int `json:"count"`
 	Results []NamedApiResource `json:"results"`
 }
 
-type PokemonOfType struct {
-	Type string `json:"name"`
+type Type struct {
+	Name string `json:"name"`
 	Pokemon []TypePokemon `json:"pokemon"`
 }
 
@@ -32,15 +33,6 @@ type Pokemon struct {
 	Name string `json:"name"`
 }
 
-
-
-func mapPokemonNames(pokemonResults []NamedApiResource) []string {
-	names := make([]string, len(pokemonResults))
-	for i, e := range pokemonResults {
-		names[i] = e.Name
-	}
-	return names
-}
 
 func bodyCloser (resp *http.Response) {
 	err := resp.Body.Close()
@@ -61,14 +53,24 @@ func ListPokemon(cCtx *cli.Context) error {
 
 	defer bodyCloser(resp)
 	
-	var data ListPokemonResponseBodyData
+	var data NamedAPIResourceList
 	
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	
+	funcMap := template.FuncMap{
+		"inc": func(i int) int {
+				return i + 1
+		},
+	}
 
-	fmt.Println(mapPokemonNames(data.Results))
+	tmpl := template.Must(template.New("listPokemon.tmpl").Funcs(funcMap).ParseFiles("listPokemon.tmpl"))
+	err = tmpl.Execute(os.Stdout, data)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	return nil
 }	
@@ -89,7 +91,13 @@ func PokemonById(cCtx *cli.Context) error {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(data)
+
+	tmplFile := "pokemonById.tmpl"
+	tmpl := template.Must(template.New(tmplFile).ParseFiles(tmplFile))
+	err = tmpl.Execute(os.Stdout, data)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	return nil
 }
@@ -104,13 +112,25 @@ func PokemonByType(cCtx *cli.Context) error {
 
 	defer bodyCloser(resp)
 	
-	var data PokemonOfType
+	var data Type
 	
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(data)
+	
+		
+	funcMap := template.FuncMap{
+		"inc": func(i int) int {
+				return i + 1
+		},
+	}
+	tmplFile := "pokemonByType.tmpl"
+	tmpl := template.Must(template.New(tmplFile).Funcs(funcMap).ParseFiles(tmplFile))
+	err = tmpl.Execute(os.Stdout, data)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	return nil
 }
