@@ -12,19 +12,19 @@ func main() {
 		Name: "Pokefetch",
 		Commands: []*cli.Command{
 			{
-				Name: 	 "List",
+				Name: 	 "list",
 				Aliases: []string{"l"},
 				Usage: 	 "list pokemon",
 				Action: pokequery.ListPokemon,
 			},
 			{
-				Name: 	 "Get",
+				Name: 	 "get",
 				Aliases: []string{"g"},
 				Usage: 	 "get pokemon by id",
 				Action: pokequery.PokemonById,
 			},
 			{
-				Name: 	 "ListByType",
+				Name: 	 "type",
 				Aliases: []string{"t"},
 				Usage: 	 "List pokemon by type",
 				Action: pokequery.PokemonByType,
